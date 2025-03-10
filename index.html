@@ -2,42 +2,88 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>預約服務</title>
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+Mono+TC&display=swap" rel="stylesheet">
     <style>
+        /* 整體樣式 */
         body {
-            background-color: #EED9C4; /* 淺奶茶色背景 */
+            background-color: #EED9C4; /* 奶茶色背景 */
             font-family: 'LXGW WenKai Mono TC', sans-serif;
             text-align: center;
             color: #5A3A31; /* 深咖啡色字體 */
             margin: 0;
             padding: 20px;
+            max-width: 500px;
+            margin: auto;
         }
+
+        /* 輸入框 & 下拉選單 */
         select, input {
-            width: 80%;
-            padding: 10px;
+            width: 90%;
+            padding: 15px;
             margin: 10px 0;
             border: 2px solid #C19A6B;
-            border-radius: 5px;
-            font-size: 16px;
+            border-radius: 10px;
+            font-size: 18px;
             background-color: #FFF5E1;
             color: #5A3A31;
             text-align: center;
         }
+
+        /* 修正時間選擇框的字體大小 */
+        input[type="datetime-local"] {
+            font-size: 18px;
+            padding: 12px;
+        }
+
+        /* 按鈕樣式 */
         button {
             background-color: #C19A6B;
             color: white;
             border: none;
             padding: 15px 20px;
-            font-size: 18px;
-            border-radius: 8px;
+            font-size: 20px;
+            border-radius: 12px;
             cursor: pointer;
+            width: 90%;
+            margin-top: 15px;
             transition: 0.3s;
         }
         button:hover {
             background-color: #A67C52;
+        }
+
+        /* 讓 Checkbox 兩欄顯示，避免手機畫面太長 */
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            text-align: left;
+            max-width: 500px;
+            margin: auto;
+        }
+        .checkbox-group label {
+            width: 48%;
+            display: block;
+            padding: 5px;
+            font-size: 16px;
+        }
+
+        /* 響應式設計，針對手機小螢幕優化 */
+        @media screen and (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            select, input, button {
+                width: 95%;
+                font-size: 16px;
+                padding: 12px;
+            }
+            .checkbox-group label {
+                width: 100%; /* 在小螢幕上，每個選項佔滿整行 */
+            }
         }
     </style>
 </head>
@@ -78,6 +124,9 @@
         <label><input type="checkbox" name="service" value="頭肩頸按摩15分"> 頭肩頸按摩15分</label><br>
         <label><input type="checkbox" name="service" value="頭肩頸按摩30分"> 頭肩頸按摩30分</label><br>
         <label><input type="checkbox" name="service" value="半身按摩45分"> 半身按摩45分</label><br>
+        <label><input type="checkbox" name="service" value="運動按摩60分"> 運動按摩60分</label><br>
+        <label><input type="checkbox" name="service" value="運動按摩90分"> 運動按摩90分</label><br>
+        <label><input type="checkbox" name="service" value="運動按摩120分"> 運動按摩120分</label><br>
     </div>
 
     <label>選擇預約時間：</label>
@@ -88,31 +137,34 @@
     <script>
         function submitBooking() {
             let master = document.getElementById("master").value;
-            let service = document.getElementById("service").value;
+            let services = [];
+            document.querySelectorAll('input[name="service"]:checked').forEach((checkbox) => {
+                services.push(checkbox.value);
+            });
             let bookingTime = document.getElementById("bookingTime").value;
+
+            if (services.length === 0) {
+                alert("請至少選擇一個服務項目！");
+                return;
+            }
 
             if (!bookingTime) {
                 alert("請選擇預約時間！");
                 return;
             }
 
-            let bookingMessage = `📌 預約確認\n👨 師傅：${master}\n🔧 服務：${service}\n⏰ 時間：${bookingTime}`;
+            let bookingMessage = `📌 預約確認\n👨 師傅：${master}\n🔧 服務：${services.join(', ')}\n⏰ 時間：${bookingTime}`;
 
-            liff.sendMessages([
-                {
-                    type: "text",
-                    text: bookingMessage
-                }
-            ]).then(() => {
-                alert("預約成功！請返回 LINE");
-                liff.closeWindow();
-            }).catch((err) => {
-                console.error("發送訊息失敗", err);
-            });
+            liff.sendMessages([{ type: "text", text: bookingMessage }])
+                .then(() => {
+                    alert("預約成功！請返回 LINE");
+                    liff.closeWindow();
+                })
+                .catch((err) => console.error("發送訊息失敗", err));
         }
 
         function initializeLiff() {
-            liff.init({ liffId: 2007046076-266OGjYN" })
+            liff.init({ liffId: "2007046076-266OGjYN" })
                 .then(() => console.log("LIFF 初始化成功"))
                 .catch((err) => console.error("LIFF 初始化失敗", err));
         }
