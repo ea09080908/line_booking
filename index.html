@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>預約服務</title>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
+        select, input, button { margin: 10px; padding: 10px; width: 80%; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <h2>請選擇預約內容</h2>
+
+    <label>選擇師傅：</label>
+    <select id="master">
+        <option value="王小明">王小明</option>
+        <option value="張大偉">張大偉</option>
+        <option value="李建宏">李建宏</option>
+    </select>
+
+    <label>選擇服務項目：</label>
+    <select id="service">
+        <option value="冷氣清洗">冷氣清洗</option>
+        <option value="水電維修">水電維修</option>
+        <option value="管道疏通">管道疏通</option>
+    </select>
+
+    <label>選擇預約時間：</label>
+    <input type="datetime-local" id="bookingTime">
+
+    <button onclick="submitBooking()">確認預約</button>
+
+    <script>
+        function submitBooking() {
+            let master = document.getElementById("master").value;
+            let service = document.getElementById("service").value;
+            let bookingTime = document.getElementById("bookingTime").value;
+
+            if (!bookingTime) {
+                alert("請選擇預約時間！");
+                return;
+            }
+
+            let bookingMessage = `📌 預約確認\n👨 師傅：${master}\n🔧 服務：${service}\n⏰ 時間：${bookingTime}`;
+
+            liff.sendMessages([
+                {
+                    type: "text",
+                    text: bookingMessage
+                }
+            ]).then(() => {
+                alert("預約成功！請返回 LINE");
+                liff.closeWindow();
+            }).catch((err) => {
+                console.error("發送訊息失敗", err);
+            });
+        }
+
+        // 初始化 LIFF
+        function initializeLiff() {
+            liff.init({ liffId: "你的_LIFF_ID_放這裡" })
+                .then(() => {
+                    console.log("LIFF 初始化成功");
+                })
+                .catch((err) => {
+                    console.error("LIFF 初始化失敗", err);
+                });
+        }
+
+        document.addEventListener("DOMContentLoaded", initializeLiff);
+    </script>
+</body>
+</html>
