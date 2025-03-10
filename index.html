@@ -22,10 +22,10 @@
         /* 輸入框 & 下拉選單 */
         select, input {
             width: 90%;
-            padding: 15px;
+            padding: 12px;
             margin: 10px 0;
             border: 2px solid #C19A6B;
-            border-radius: 10px;
+            border-radius: 8px;
             font-size: 18px;
             background-color: #FFF5E1;
             color: #5A3A31;
@@ -35,7 +35,7 @@
         /* 修正時間選擇框的字體大小 */
         input[type="datetime-local"] {
             font-size: 18px;
-            padding: 12px;
+            padding: 10px;
         }
 
         /* 按鈕樣式 */
@@ -45,7 +45,7 @@
             border: none;
             padding: 15px 20px;
             font-size: 20px;
-            border-radius: 12px;
+            border-radius: 10px;
             cursor: pointer;
             width: 90%;
             margin-top: 15px;
@@ -55,7 +55,7 @@
             background-color: #A67C52;
         }
 
-        /* 讓 Checkbox 兩欄顯示，避免手機畫面太長 */
+        /* 修正 Checkbox 排版 */
         .checkbox-group {
             display: flex;
             flex-wrap: wrap;
@@ -66,9 +66,14 @@
         }
         .checkbox-group label {
             width: 48%;
-            display: block;
+            display: flex;
+            align-items: center;
             padding: 5px;
             font-size: 16px;
+        }
+        .checkbox-group input {
+            margin-right: 8px;
+            transform: scale(1.2); /* 放大 Checkbox */
         }
 
         /* 響應式設計，針對手機小螢幕優化 */
@@ -136,12 +141,18 @@
 
     <script>
         function submitBooking() {
+            console.log("按鈕已點擊");
+
             let master = document.getElementById("master").value;
             let services = [];
             document.querySelectorAll('input[name="service"]:checked').forEach((checkbox) => {
                 services.push(checkbox.value);
             });
             let bookingTime = document.getElementById("bookingTime").value;
+
+            console.log("選擇的師傅:", master);
+            console.log("選擇的服務:", services);
+            console.log("預約時間:", bookingTime);
 
             if (services.length === 0) {
                 alert("請至少選擇一個服務項目！");
@@ -154,6 +165,8 @@
             }
 
             let bookingMessage = `📌 預約確認\n👨 師傅：${master}\n🔧 服務：${services.join(', ')}\n⏰ 時間：${bookingTime}`;
+
+            console.log("傳送訊息內容:", bookingMessage);
 
             liff.sendMessages([{ type: "text", text: bookingMessage }])
                 .then(() => {
