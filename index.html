@@ -7,7 +7,8 @@
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
-        select, input, button { margin: 10px; padding: 10px; width: 80%; font-size: 16px; }
+        .checkbox-group { text-align: left; display: inline-block; }
+        button { margin-top: 15px; padding: 10px 20px; font-size: 16px; }
     </style>
 </head>
 <body>
@@ -24,33 +25,30 @@
         <option value="24號男師傅">24號男師傅</option>
         <option value="9號男師傅">9號男師傅</option>
         <option value="不指定師傅">不指定師傅</option>
-
     </select>
 
     <label>選擇服務項目：</label>
-    <select id="service">
-        <option value="A套餐">A套餐</option>
-        <option value="B套餐">B套餐</option>
-        <option value="C套餐">C套餐</option>
-        <option value="D套餐">D套餐</option>
-        <option value="腳底腿部按摩40分">腳底腿部按摩40分</option>
-        <option value="腳底腿部按摩60分">腳底腿部按摩60分</option>
-        <option value="身體指壓60分">身體指壓60分</option>
-        <option value="身體指壓90分">身體指壓90分</option>
-        <option value="身體指壓120分">身體指壓120分</option>
-        <option value="身體油壓60分">身體油壓60分</option>
-        <option value="身體油壓90分">身體油壓90分</option>
-        <option value="身體油壓120分">身體油壓120分</option>
-        <option value="單次刮痧">單次刮痧</option>
-        <option value="眼部舒壓+頭肩頸按摩45分">眼部舒壓+頭肩頸按摩45分</option>
-        <option value="耳燭+頭肩頸按摩45分">耳燭+頭肩頸按摩45分</option>
-        <option value="上海刀修腳皮">上海刀修腳皮</option>
-        <option value="頭肩頸按摩15分">頭肩頸按摩15分</option>
-        <option value="頭肩頸按摩30分">頭肩頸按摩30分</option>
-        <option value="半身按摩45分">半身按摩45分</option>
-      
-
-    </select>
+    <div class="checkbox-group">
+        <label><input type="checkbox" name="service" value="A套餐"> A套餐</label><br>
+        <label><input type="checkbox" name="service" value="B套餐"> B套餐</label><br>
+        <label><input type="checkbox" name="service" value="C套餐"> C套餐</label><br>
+        <label><input type="checkbox" name="service" value="D套餐"> D套餐</label><br>
+        <label><input type="checkbox" name="service" value="腳底腿部按摩40分"> 腳底腿部按摩40分</label><br>
+        <label><input type="checkbox" name="service" value="腳底腿部按摩60分"> 腳底腿部按摩60分</label><br>
+        <label><input type="checkbox" name="service" value="身體指壓60分"> 身體指壓60分</label><br>
+        <label><input type="checkbox" name="service" value="身體指壓90分"> 身體指壓90分</label><br>
+        <label><input type="checkbox" name="service" value="身體指壓120分"> 身體指壓120分</label><br>
+        <label><input type="checkbox" name="service" value="身體油壓60分"> 身體油壓60分</label><br>
+        <label><input type="checkbox" name="service" value="身體油壓90分"> 身體油壓90分</label><br>
+        <label><input type="checkbox" name="service" value="身體油壓120分"> 身體油壓120分</label><br>
+        <label><input type="checkbox" name="service" value="單次刮痧"> 單次刮痧</label><br>
+        <label><input type="checkbox" name="service" value="眼部舒壓頭肩頸按摩45分"> 眼部舒壓頭肩頸按摩45分</label><br>
+        <label><input type="checkbox" name="service" value="耳燭頭肩頸按摩45分"> 耳燭頭肩頸按摩45分</label><br>
+        <label><input type="checkbox" name="service" value="上海刀修腳皮"> 上海刀修腳皮</label><br>
+        <label><input type="checkbox" name="service" value="頭肩頸按摩15分"> 頭肩頸按摩15分</label><br>
+        <label><input type="checkbox" name="service" value="頭肩頸按摩30分"> 頭肩頸按摩30分</label><br>
+        <label><input type="checkbox" name="service" value="半身按摩45分"> 半身按摩45分</label><br>
+    </div>
 
     <label>選擇預約時間：</label>
     <input type="datetime-local" id="bookingTime">
@@ -60,15 +58,33 @@
     <script>
         function submitBooking() {
             let master = document.getElementById("master").value;
-            let service = document.getElementById("service").value;
             let bookingTime = document.getElementById("bookingTime").value;
+
+            // 取得所有勾選的服務項目
+            let services = [];
+            document.querySelectorAll('input[name="service"]:checked').forEach((checkbox) => {
+                services.push(checkbox.value);
+            });
+
+            // Debug：確認選項是否正確讀取
+            console.log("選擇的師傅:", master);
+            console.log("選擇的服務:", services);
+            console.log("預約時間:", bookingTime);
+
+            if (services.length === 0) {
+                alert("請至少選擇一個服務項目！");
+                return;
+            }
 
             if (!bookingTime) {
                 alert("請選擇預約時間！");
                 return;
             }
 
-            let bookingMessage = `📌 預約確認\n👨 師傅：${master}\n🔧 服務：${service}\n⏰ 時間：${bookingTime}`;
+            let bookingMessage = `📌 預約確認\n👨 師傅：${master}\n🔧 服務：${services.join(', ')}\n⏰ 時間：${bookingTime}`;
+
+            // Debug：確認訊息格式是否正確
+            console.log("傳送的訊息內容:", bookingMessage);
 
             liff.sendMessages([
                 {
@@ -80,18 +96,14 @@
                 liff.closeWindow();
             }).catch((err) => {
                 console.error("發送訊息失敗", err);
+                alert("發送訊息失敗，請檢查 Console Log");
             });
         }
 
-        // 初始化 LIFF
         function initializeLiff() {
-            liff.init({ liffId: "2007046076-266OGjYN" })
-                .then(() => {
-                    console.log("LIFF 初始化成功");
-                })
-                .catch((err) => {
-                    console.error("LIFF 初始化失敗", err);
-                });
+            liff.init({ liffId: "你的_LIFF_ID_放這裡" })
+                .then(() => console.log("LIFF 初始化成功"))
+                .catch((err) => console.error("LIFF 初始化失敗", err));
         }
 
         document.addEventListener("DOMContentLoaded", initializeLiff);
