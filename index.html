@@ -5,30 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>預約服務</title>
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-
-    <!-- 🔹 Firebase 連接 -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-        // 🔹 你的 Firebase 設定
-        const firebaseConfig = {
-            apiKey: "你的 Firebase API Key",
-            authDomain: "你的 Firebase 專案 ID.firebaseapp.com",
-            projectId: "你的 Firebase 專案 ID",
-            storageBucket: "你的 Firebase 專案 ID.appspot.com",
-            messagingSenderId: "你的 Firebase 訊息發送 ID",
-            appId: "你的 Firebase App ID"
-        };
-
-        // 🔹 初始化 Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-    </script>
-
+    <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+Mono+TC&display=swap" rel="stylesheet">
     <style>
+        /* 整體樣式 */
         body {
-            background-color: #EED9C4;
+            background-color: #EED9C4; /* 奶茶色背景 */
             font-family: 'LXGW WenKai Mono TC', sans-serif;
             color: #5A3A31;
             margin: 0;
@@ -36,11 +17,14 @@
             max-width: 500px;
             margin: auto;
         }
+
         h2, label {
             text-align: left;
             display: block;
             margin-bottom: 5px;
         }
+
+        /* 下拉選單 & 輸入框 */
         select, input {
             width: 100%;
             padding: 12px;
@@ -51,6 +35,8 @@
             background-color: #FFF5E1;
             color: #5A3A31;
         }
+
+        /* 按鈕樣式 */
         button {
             background-color: #C19A6B;
             color: white;
@@ -63,6 +49,7 @@
             margin-top: 15px;
             transition: 0.3s;
         }
+
         button:hover {
             background-color: #A67C52;
         }
@@ -144,80 +131,71 @@
     <label>選擇預約時間：</label>
     <select id="bookingTime">
         <option value="">請選擇時間</option>
+        <script>
+            let timeDropdown = document.getElementById("bookingTime");
+            let startHour = 10, startMinute = 30, endHour = 22;
+            for (let h = startHour; h < endHour; h++) {
+                for (let m = 0; m < 60; m += 15) {
+                    let hourStr = h < 10 ? "0" + h : h;
+                    let minuteStr = m < 10 ? "0" + m : m;
+                    let timeStr = hourStr + ":" + minuteStr;
+                    let option = new Option(timeStr, timeStr);
+                    timeDropdown.add(option);
+                }
+            }
+        </script>
     </select>
 
     <button onclick="submitBooking()">確認預約</button>
 
     <script>
+        function submitBooking() {
+            let master = document.getElementById("master").value;
+            let service1 = document.getElementById("service1").value;
+            let service2 = document.getElementById("service2").value;
+            let bookingDate = document.getElementById("bookingDate").value;
+            let bookingTime = document.getElementById("bookingTime").value;
+
+            if (!service1) {
+                alert("請選擇至少一個服務項目！");
+                return;
+            }
+
+            if (!bookingDate) {
+                alert("請選擇預約日期！");
+                return;
+            }
+
+            if (!bookingTime) {
+                alert("請選擇預約時間！");
+                return;
+            }
+
+            let serviceMessage = service1;
+            if (service2) {
+                serviceMessage += `, ${service2}`;
+            }
+
+            let bookingMessage = `📌 請等待小編預約確認\n👨 師傅：${master}\n🔧 服務：${serviceMessage}\n📅 日期：${bookingDate}\n⏰ 時間：${bookingTime}\n\n📢 若您有其他特殊要求及狀況~務必要於服務前告知我們唷~\n➡️例如：是否有開刀的部位或是有懷孕的情形~\n本館僅提供按摩服務予懷孕 5 至 8 個月（20 至 32 週） 之孕婦。\n若本人確認符合此條件，請據實告知孕期週數，且進行服務前須簽署切結書方能安排服務。`;
+
+            liff.sendMessages([{ type: "text", text: bookingMessage }])
+                .then(() => {
+                    alert("預約成功！請返回 LINE");
+                    liff.closeWindow();
+                })
+                .catch((err) => {
+                    console.error("發送訊息失敗", err);
+                    alert("發送訊息失敗，請確認 LIFF 設定是否正確！");
+                });
+        }
+
         function initializeLiff() {
             liff.init({ liffId: "2007046076-266OGjYN" })
                 .then(() => console.log("LIFF 初始化成功"))
                 .catch((err) => console.error("LIFF 初始化失敗", err));
         }
+
         document.addEventListener("DOMContentLoaded", initializeLiff);
-
-        async function loadAvailableTimes() {
-            let master = document.getElementById("master").value;
-            let bookingDate = document.getElementById("bookingDate").value;
-            let timeDropdown = document.getElementById("bookingTime");
-
-            if (!master || !bookingDate) return;
-
-            // 清空時間選單
-            timeDropdown.innerHTML = '<option value="">請選擇時間</option>';
-
-            // 🔹 從 Firebase 讀取已預約時間
-            let docRef = doc(db, "bookings", master);
-            let docSnap = await getDoc(docRef);
-            let reservedTimes = docSnap.exists() ? docSnap.data()[bookingDate] || {} : {};
-
-            let startHour = 10, startMinute = 30, endHour = 22;
-            for (let h = startHour; h < endHour; h++) {
-                for (let m = 0; m < 60; m += 15) {
-                    let timeStr = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
-                    if (!reservedTimes[timeStr]) {  // 只有未被預約的時間才顯示
-                        let option = new Option(timeStr, timeStr);
-                        timeDropdown.add(option);
-                    }
-                }
-            }
-        }
-
-        document.getElementById("master").addEventListener("change", loadAvailableTimes);
-        document.getElementById("bookingDate").addEventListener("change", loadAvailableTimes);
-
-        async function submitBooking() {
-            let master = document.getElementById("master").value;
-            let bookingDate = document.getElementById("bookingDate").value;
-            let bookingTime = document.getElementById("bookingTime").value;
-
-            if (!bookingDate || !bookingTime) {
-                alert("請選擇完整的預約內容！");
-                return;
-            }
-
-            let bookingMessage = `📌 預約確認\n👨 師傅：${master}\n📅 日期：${bookingDate}\n⏰ 時間：${bookingTime}`;
-
-            try {
-                // 🔹 更新 Firebase，將該時段標記為「已預約」
-                let docRef = doc(db, "bookings", master);
-                let docSnap = await getDoc(docRef);
-                let data = docSnap.exists() ? docSnap.data() : {};
-
-                if (!data[bookingDate]) data[bookingDate] = {}; // 如果該日期不存在，則新增
-                data[bookingDate][bookingTime] = "已預約"; // 標記該時間已被預約
-
-                await setDoc(docRef, data); // 更新 Firebase
-
-                // 🔹 發送訊息到 LINE
-                await liff.sendMessages([{ type: "text", text: bookingMessage }]);
-                alert("預約成功！該時段已鎖定");
-                liff.closeWindow();
-            } catch (err) {
-                console.error("發送訊息失敗", err);
-                alert("發送訊息失敗，請確認 LIFF 設定是否正確！");
-            }
-        }
     </script>
 </body>
 </html>
