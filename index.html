@@ -9,30 +9,35 @@
     <style>
         /* 整體樣式 */
         body {
-            background-color: #EED9C4; /* 奶茶色背景 */
+            background-color: #EED9C4;
             font-family: 'LXGW WenKai Mono TC', sans-serif;
-            text-align: center;
-            color: #5A3A31; /* 深咖啡色字體 */
+            color: #5A3A31;
             margin: 0;
             padding: 20px;
             max-width: 500px;
             margin: auto;
         }
 
+        /* 調整標題靠左 */
+        h2, label {
+            text-align: left;
+            display: block;
+            margin-left: 5px;
+        }
+
         /* 輸入框 & 下拉選單 */
         select, input {
             width: 90%;
             padding: 12px;
-            margin: 10px 0;
+            margin: 10px 5px;
             border: 2px solid #C19A6B;
             border-radius: 8px;
             font-size: 18px;
             background-color: #FFF5E1;
             color: #5A3A31;
-            text-align: center;
         }
 
-        /* 修正時間選擇框的字體大小 */
+        /* 時間選擇框 */
         input[type="datetime-local"] {
             font-size: 18px;
             padding: 10px;
@@ -48,47 +53,30 @@
             border-radius: 10px;
             cursor: pointer;
             width: 90%;
-            margin-top: 15px;
+            margin: 15px 5px;
             transition: 0.3s;
         }
         button:hover {
             background-color: #A67C52;
         }
 
-        /* 修正 Checkbox 排版 */
+        /* 調整 Checkbox 靠左 */
         .checkbox-group {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
+            flex-direction: column;
             text-align: left;
             max-width: 500px;
             margin: auto;
         }
         .checkbox-group label {
-            width: 48%;
             display: flex;
             align-items: center;
-            padding: 5px;
+            padding: 5px 10px;
             font-size: 16px;
         }
         .checkbox-group input {
             margin-right: 8px;
-            transform: scale(1.2); /* 放大 Checkbox */
-        }
-
-        /* 響應式設計，針對手機小螢幕優化 */
-        @media screen and (max-width: 480px) {
-            body {
-                padding: 10px;
-            }
-            select, input, button {
-                width: 95%;
-                font-size: 16px;
-                padding: 12px;
-            }
-            .checkbox-group label {
-                width: 100%; /* 在小螢幕上，每個選項佔滿整行 */
-            }
+            transform: scale(1.2);
         }
     </style>
 </head>
@@ -168,18 +156,34 @@
 
             console.log("傳送訊息內容:", bookingMessage);
 
+            if (!liff.isLoggedIn()) {
+                alert("請先登入 LINE 再預約！");
+                return;
+            }
+
             liff.sendMessages([{ type: "text", text: bookingMessage }])
                 .then(() => {
                     alert("預約成功！請返回 LINE");
                     liff.closeWindow();
                 })
-                .catch((err) => console.error("發送訊息失敗", err));
+                .catch((err) => {
+                    console.error("發送訊息失敗", err);
+                    alert("發送訊息失敗，請確認 LIFF 設定是否正確！");
+                });
         }
 
         function initializeLiff() {
             liff.init({ liffId: "2007046076-266OGjYN" })
-                .then(() => console.log("LIFF 初始化成功"))
-                .catch((err) => console.error("LIFF 初始化失敗", err));
+                .then(() => {
+                    console.log("LIFF 初始化成功");
+                    if (!liff.isLoggedIn()) {
+                        liff.login();
+                    }
+                })
+                .catch((err) => {
+                    console.error("LIFF 初始化失敗", err);
+                    alert("LIFF 初始化失敗，請檢查 LIFF ID 設定");
+                });
         }
 
         document.addEventListener("DOMContentLoaded", initializeLiff);
