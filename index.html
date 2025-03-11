@@ -60,89 +60,59 @@
             background-color: #A67C52;
         }
 
-/* 讓 Checkbox 排列成多列 */
-.checkbox-group {
-    display: flex;
-    flex-wrap: wrap;  /* 允許換行 */
-    justify-content: flex-start; /* 讓項目從左到右排列 */
-    max-width: 500px;
-    margin: auto;
-}
+        <label>選擇服務項目（第一個）：</label>
+<select id="service1">
+    <option value="">請選擇服務</option>
+    <option value="A套餐">A套餐</option>
+    <option value="B套餐">B套餐</option>
+    <option value="C套餐">C套餐</option>
+    <option value="D套餐">D套餐</option>
+    <option value="腳底腿部按摩40分">腳底腿部按摩40分</option>
+    <option value="腳底腿部按摩60分">腳底腿部按摩60分</option>
+    <option value="身體指壓60分">身體指壓60分</option>
+    <option value="身體指壓90分">身體指壓90分</option>
+    <option value="身體指壓120分">身體指壓120分</option>
+    <option value="身體油壓60分">身體油壓60分</option>
+    <option value="身體油壓90分">身體油壓90分</option>
+    <option value="身體油壓120分">身體油壓120分</option>
+    <option value="眼部舒壓頭肩頸按摩45分">眼部舒壓頭肩頸按摩45分</option>
+    <option value="耳燭頭肩頸按摩45分">耳燭頭肩頸按摩45分</option>
+    <option value="頭肩頸按摩15分">頭肩頸按摩15分</option>
+    <option value="頭肩頸按摩30分">頭肩頸按摩30分</option>
+    <option value="半身按摩45分">半身按摩45分</option>
+    <option value="運動按摩60分">運動按摩60分</option>
+    <option value="運動按摩90分">運動按摩90分</option>
+    <option value="運動按摩120分">運動按摩120分</option>
+    <option value="單次刮痧">單次刮痧</option>
+    <option value="上海刀修腳皮">上海刀修腳皮</option>
+</select>
 
-/* 讓不同長度的服務名稱有不同寬度 */
-.checkbox-group label {
-    display: flex;
-    align-items: center;
-    padding: 5px 10px;
-    font-size: 16px;
-    white-space: nowrap; /* 避免文字換行 */
-}
-
-/* 根據字數自動調整寬度 */
-.checkbox-group label:nth-child(4n + 1),
-.checkbox-group label:nth-child(4n + 2),
-.checkbox-group label:nth-child(4n + 3) {
-    width: 30%; /* 三個短標題一排 */
-}
-
-.checkbox-group label:nth-child(4n) {
-    width: 100%; /* 長標題獨占一整排 */
-}
-
-/* 確保 Checkbox 和文字對齊 */
-.checkbox-group input {
-    margin-right: 8px;
-    transform: scale(1.2); /* 讓 Checkbox 稍微放大 */
-}
-    </style>
-</head>
-<body>
-    <h2>請選擇預約內容</h2>
-
-    <label>選擇師傅：</label>
-    <select id="master">
-        <option value="22號女師傅">22號女師傅</option>
-        <option value="77號女師傅">77號女師傅</option>
-        <option value="23號女師傅">23號女師傅</option>
-        <option value="88號女師傅">88號女師傅</option>
-        <option value="8號男師傅">8號男師傅</option>
-        <option value="13號男師傅">13號男師傅</option>
-        <option value="24號男師傅">24號男師傅</option>
-        <option value="9號男師傅">9號男師傅</option>
-        <option value="不指定師傅">不指定師傅</option>
-    </select>
-
-    <label>選擇服務項目：</label>
-    <div class="checkbox-group">
-        <label><input type="checkbox" name="service" value="A套餐"> A套餐</label>
-        <label><input type="checkbox" name="service" value="B套餐"> B套餐</label>
-        <label><input type="checkbox" name="service" value="C套餐"> C套餐</label>
-        <label><input type="checkbox" name="service" value="D套餐"> D套餐</label>
-    
-        <label><input type="checkbox" name="service" value="腳底腿部按摩40分"> 腳底腿部按摩40分</label>
-        <label><input type="checkbox" name="service" value="腳底腿部按摩60分"> 腳底腿部按摩60分</label>
-    
-        <label><input type="checkbox" name="service" value="身體指壓60分"> 身體指壓60分</label>
-        <label><input type="checkbox" name="service" value="身體指壓90分"> 身體指壓90分</label>
-        <label><input type="checkbox" name="service" value="身體指壓120分"> 身體指壓120分</label>
-    
-        <label><input type="checkbox" name="service" value="身體油壓60分"> 身體油壓60分</label>
-        <label><input type="checkbox" name="service" value="身體油壓90分"> 身體油壓90分</label>
-        <label><input type="checkbox" name="service" value="身體油壓120分"> 身體油壓120分</label>
-    
-        <label><input type="checkbox" name="service" value="眼部舒壓頭肩頸按摩45分"> 眼部舒壓頭肩頸按摩45分</label>
-        <label><input type="checkbox" name="service" value="耳燭頭肩頸按摩45分"> 耳燭頭肩頸按摩45分</label>
-    
-        <label><input type="checkbox" name="service" value="頭肩頸按摩15分"> 頭肩頸按摩15分</label>
-        <label><input type="checkbox" name="service" value="頭肩頸按摩30分"> 頭肩頸按摩30分</label>
-        <label><input type="checkbox" name="service" value="半身按摩45分"> 半身按摩45分</label>
-    
-        <label><input type="checkbox" name="service" value="運動按摩60分"> 運動按摩60分</label>
-        <label><input type="checkbox" name="service" value="運動按摩90分"> 運動按摩90分</label>
-        <label><input type="checkbox" name="service" value="運動按摩120分"> 運動按摩120分</label>
-    
-        <label><input type="checkbox" name="service" value="單次刮痧"> 單次刮痧</label>
-        <label><input type="checkbox" name="service" value="上海刀修腳皮"> 上海刀修腳皮</label>
+<label>選擇服務項目（第二個，可選填）：</label>
+<select id="service2">
+    <option value="">請選擇服務（可不選）</option>
+    <option value="A套餐">A套餐</option>
+    <option value="B套餐">B套餐</option>
+    <option value="C套餐">C套餐</option>
+    <option value="D套餐">D套餐</option>
+    <option value="腳底腿部按摩40分">腳底腿部按摩40分</option>
+    <option value="腳底腿部按摩60分">腳底腿部按摩60分</option>
+    <option value="身體指壓60分">身體指壓60分</option>
+    <option value="身體指壓90分">身體指壓90分</option>
+    <option value="身體指壓120分">身體指壓120分</option>
+    <option value="身體油壓60分">身體油壓60分</option>
+    <option value="身體油壓90分">身體油壓90分</option>
+    <option value="身體油壓120分">身體油壓120分</option>
+    <option value="眼部舒壓頭肩頸按摩45分">眼部舒壓頭肩頸按摩45分</option>
+    <option value="耳燭頭肩頸按摩45分">耳燭頭肩頸按摩45分</option>
+    <option value="頭肩頸按摩15分">頭肩頸按摩15分</option>
+    <option value="頭肩頸按摩30分">頭肩頸按摩30分</option>
+    <option value="半身按摩45分">半身按摩45分</option>
+    <option value="運動按摩60分">運動按摩60分</option>
+    <option value="運動按摩90分">運動按摩90分</option>
+    <option value="運動按摩120分">運動按摩120分</option>
+    <option value="單次刮痧">單次刮痧</option>
+    <option value="上海刀修腳皮">上海刀修腳皮</option>
+</select>
     </div>
 
     <label>選擇預約時間：</label>
