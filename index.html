@@ -24,7 +24,7 @@
             margin-bottom: 5px;
         }
 
-        /* 輸入框 & 下拉選單 */
+        /* 下拉選單 & 輸入框 */
         select, input {
             width: 100%;
             padding: 12px;
@@ -125,8 +125,26 @@
         <option value="上海刀修腳皮">上海刀修腳皮</option>
     </select>
 
+    <label>選擇預約日期：</label>
+    <input type="date" id="bookingDate">
+
     <label>選擇預約時間：</label>
-    <input type="datetime-local" id="bookingTime">
+    <select id="bookingTime">
+        <option value="">請選擇時間</option>
+        <script>
+            let timeDropdown = document.getElementById("bookingTime");
+            let startHour = 10, startMinute = 30, endHour = 22;
+            for (let h = startHour; h < endHour; h++) {
+                for (let m = 0; m < 60; m += 15) {
+                    let hourStr = h < 10 ? "0" + h : h;
+                    let minuteStr = m < 10 ? "0" + m : m;
+                    let timeStr = hourStr + ":" + minuteStr;
+                    let option = new Option(timeStr, timeStr);
+                    timeDropdown.add(option);
+                }
+            }
+        </script>
+    </select>
 
     <button onclick="submitBooking()">確認預約</button>
 
@@ -135,10 +153,16 @@
             let master = document.getElementById("master").value;
             let service1 = document.getElementById("service1").value;
             let service2 = document.getElementById("service2").value;
+            let bookingDate = document.getElementById("bookingDate").value;
             let bookingTime = document.getElementById("bookingTime").value;
 
             if (!service1) {
                 alert("請選擇至少一個服務項目！");
+                return;
+            }
+
+            if (!bookingDate) {
+                alert("請選擇預約日期！");
                 return;
             }
 
@@ -152,7 +176,7 @@
                 serviceMessage += `, ${service2}`;
             }
 
-            let bookingMessage = `📌 預約確認\n👨 師傅：${master}\n🔧 服務：${serviceMessage}\n⏰ 時間：${bookingTime}`;
+            let bookingMessage = `📌 預約確認\n👨 師傅：${master}\n🔧 服務：${serviceMessage}\n📅 日期：${bookingDate}\n⏰ 時間：${bookingTime}\n\n📢 若您有其他特殊要求及狀況~務必要於服務前告知我們唷~\n➡️例如：是否有開刀的部位或是有懷孕的情形~\n本館僅提供按摩服務予懷孕 5 至 8 個月（20 至 32 週） 之孕婦。\n若本人確認符合此條件，請據實告知孕期週數，且進行服務前須簽署切結書方能安排服務。`;
 
             liff.sendMessages([{ type: "text", text: bookingMessage }])
                 .then(() => {
