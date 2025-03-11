@@ -149,53 +149,87 @@
     <button onclick="submitBooking()">確認預約</button>
 
     <script>
-        function submitBooking() {
-            let master = document.getElementById("master").value;
-            let service1 = document.getElementById("service1").value;
-            let service2 = document.getElementById("service2").value;
-            let bookingDate = document.getElementById("bookingDate").value;
-            let bookingTime = document.getElementById("bookingTime").value;
-
-            if (!service1) {
-                alert("請選擇至少一個服務項目！");
-                return;
-            }
-
-            if (!bookingDate) {
-                alert("請選擇預約日期！");
-                return;
-            }
-
-            if (!bookingTime) {
-                alert("請選擇預約時間！");
-                return;
-            }
-
-            let serviceMessage = service1;
-            if (service2) {
-                serviceMessage += `, ${service2}`;
-            }
-
-            let bookingMessage = `📌 請等待小編預約確認\n👨 師傅：${master}\n🔧 服務：${serviceMessage}\n📅 日期：${bookingDate}\n⏰ 時間：${bookingTime}\n\n📢 若您有其他特殊要求及狀況~務必要於服務前告知我們唷~\n➡️例如：是否有開刀的部位或是有懷孕的情形~\n本館僅提供按摩服務予懷孕 5 至 8 個月（20 至 32 週） 之孕婦。\n若本人確認符合此條件，請據實告知孕期週數，且進行服務前須簽署切結書方能安排服務。`;
-
-            liff.sendMessages([{ type: "text", text: bookingMessage }])
-                .then(() => {
-                    alert("預約成功！請返回 LINE");
-                    liff.closeWindow();
-                })
-                .catch((err) => {
-                    console.error("發送訊息失敗", err);
-                    alert("發送訊息失敗，請確認 LIFF 設定是否正確！");
-                });
-        }
-
         function initializeLiff() {
             liff.init({ liffId: "2007046076-266OGjYN" })
                 .then(() => console.log("LIFF 初始化成功"))
                 .catch((err) => console.error("LIFF 初始化失敗", err));
         }
-
         document.addEventListener("DOMContentLoaded", initializeLiff);
+
+        async function loadAvailableTimes() {
+            let master = document.getElementById("master").value;
+            let bookingDate = document.getElementById("bookingDate").value;
+            let timeDropdown = document.getElementById("bookingTime");
+
+            if (!master || !bookingDate) return;
+
+            console.log(`🔍 查詢 ${master} 在 ${bookingDate} 的預約時段...`);
+
+            // 清空時間選單
+            timeDropdown.innerHTML = '<option value="">請選擇時間</option>';
+
+            let apiUrl = `https://script.google.com/macros/s/XXXXXXXXXXXXX/exec?master=${encodeURIComponent(master)}&date=${encodeURIComponent(bookingDate)}`;
+
+            try {
+                let response = await fetch(apiUrl);
+                let result = await response.json();
+
+                console.log(`📄 Google Sheets 內 ${bookingDate} 的預約時段:`, result.reservedTimes);
+
+                let startHour = 10, startMinute = 30, endHour = 22;
+                for (let h = startHour; h < endHour; h++) {
+                    for (let m = 0; m < 60; m += 15) {
+                        let timeStr = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+                        if (!result.reservedTimes.includes(timeStr)) {  
+                            let option = new Option(timeStr, timeStr);
+                            timeDropdown.add(option);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error("❌ 載入時間失敗！", error);
+            }
+        }
+
+        document.getElementById("master").addEventListener("change", loadAvailableTimes);
+        document.getElementById("bookingDate").addEventListener("change", loadAvailableTimes);
+
+        async function submitBooking() {
+            let master = document.getElementById("master").value;
+            let bookingDate = document.getElementById("bookingDate").value;
+            let bookingTime = document.getElementById("bookingTime").value;
+
+            if (!bookingDate || !bookingTime) {
+                alert("請選擇完整的預約內容！");
+                return;
+            }
+
+            let apiUrl = "https://script.google.com/macros/s/XXXXXXXXXXXXX/exec";
+            let postData = { master, date: bookingDate, time: bookingTime };
+
+            try {
+                let response = await fetch(apiUrl, {
+                    method: "POST",
+                    body: JSON.stringify(postData),
+                    headers: { "Content-Type": "application/json" }
+                });
+
+                let result = await response.json();
+                if (result.success) {
+                    // 🔹 發送訊息到 LINE
+                    let bookingMessage = `📌 請等待小編預約確認\n👨 師傅：${master}\n📅 日期：${bookingDate}\n⏰ 時間：${bookingTime}\n\n📢 若您有其他特殊要求及狀況~務必要於服務前告知我們唷~\n➡️例如：是否有開刀的部位或是有懷孕的情形~\n本館僅提供按摩服務予懷孕 5 至 8 個月（20 至 32 週） 之孕婦。\n若本人確認符合此條件，請據實告知孕期週數，且進行服務前須簽署切結書方能安排服務。`;
+
+                    await liff.sendMessages([{ type: "text", text: bookingMessage }]);
+                    alert("預約成功！請返回 LINE");
+                    liff.closeWindow();
+                } else {
+                    alert("預約失敗，請稍後再試");
+                }
+            } catch (error) {
+                console.error("發送預約失敗", error);
+                alert("發送預約失敗，請確認網路連線！");
+            }
+        }
     </script>
 </body>
 </html>
