@@ -150,7 +150,7 @@
     console.log(`🔍 查詢 ${master} 在 ${bookingDate} 的預約時段...`);
     timeDropdown.innerHTML = '<option value="">⏳ 時間載入中...</option>';
 
-    let apiUrl = `https://script.google.com/macros/s/AKfycbxH0_gmHG7500kaCmpuzOnd2S2JJLeEyNcUCngRN0ECAcAsGMG_T6-qna2yVIE3_td7Pw/exec?master=${encodeURIComponent(master)}&date=${encodeURIComponent(bookingDate)}`;
+    let apiUrl = `https://script.google.com/macros/s/AKfycbzrEViKJzyf1qk06Jhd_MvVjcAxUB6_8Z0D3_s8oLV2CfU9pFzvXKeypt-UyrPGXjflWg/exec?master=${encodeURIComponent(master)}&date=${encodeURIComponent(bookingDate)}`;
 
     try {
         let response = await fetch(apiUrl, { method: "GET" });
@@ -212,7 +212,7 @@
         return;
     }
 
-    let apiUrl = "https://script.google.com/macros/s/AKfycbxH0_gmHG7500kaCmpuzOnd2S2JJLeEyNcUCngRN0ECAcAsGMG_T6-qna2yVIE3_td7Pw/exec";
+    let apiUrl = "https://script.google.com/macros/s/AKfycbzrEViKJzyf1qk06Jhd_MvVjcAxUB6_8Z0D3_s8oLV2CfU9pFzvXKeypt-UyrPGXjflWg/exec";
 
     let postData = {
         master: master,
@@ -225,7 +225,7 @@
     try {
         let response = await fetch(apiUrl, { 
     method: "POST",
-    mode: "cors",  // ✅ 允許 CORS
+    mode: "cors",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(postData)
 });
