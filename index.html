@@ -157,40 +157,65 @@
         document.addEventListener("DOMContentLoaded", initializeLiff);
 
         async function loadAvailableTimes() {
-            let master = document.getElementById("master").value;
-            let bookingDate = document.getElementById("bookingDate").value;
-            let timeDropdown = document.getElementById("bookingTime");
+    let master = document.getElementById("master").value;
+    let bookingDate = document.getElementById("bookingDate").value;
+    let timeDropdown = document.getElementById("bookingTime");
 
-            if (!master || !bookingDate) return;
+    if (!master || !bookingDate) {
+        console.warn("⚠️ 師傅或日期未選擇，無法載入時間！");
+        return;
+    }
 
-            console.log(`🔍 查詢 ${master} 在 ${bookingDate} 的預約時段...`);
+    console.log(`🔍 查詢 ${master} 在 ${bookingDate} 的預約時段...`);
 
-            // 清空時間選單
-            timeDropdown.innerHTML = '<option value="">請選擇時間</option>';
+    // 🔹 顯示「載入中」提示
+    timeDropdown.innerHTML = '<option value="">⏳ 時間載入中...</option>';
 
-            let apiUrl = `https://script.google.com/macros/s/AKfycbzWCWSJdUsn7JkrAfzWkziKm3WoG9ywDnkwuhBcm2G-N7aoqZzBPRQsNu5qm7vYLL9j6Q/exec?master=${encodeURIComponent(master)}&date=${encodeURIComponent(bookingDate)}`;
+    let apiUrl = `https://script.google.com/macros/s/AKfycbzWCWSJdUsn7JkrAfzWkziKm3WoG9ywDnkwuhBcm2G-N7aoqZzBPRQsNu5qm7vYLL9j6Q/exec?master=${encodeURIComponent(master)}&date=${encodeURIComponent(bookingDate)}`;
 
+    try {
+        let response = await fetch(apiUrl);
+        let result = await response.json();
 
-            try {
-                let response = await fetch(apiUrl);
-                let result = await response.json();
+        console.log(`📄 API 回應:`, result);
 
-                console.log(`📄 Google Sheets 內 ${bookingDate} 的預約時段:`, result.reservedTimes);
+        // 確保 API 回應正確
+        if (!result || !Array.isArray(result.reservedTimes)) {
+            console.error("❌ API 沒有回應正確的 reservedTimes！");
+            timeDropdown.innerHTML = '<option value="">⚠️ 無法載入時段</option>';
+            return;
+        }
 
-                let startHour = 10, startMinute = 30, endHour = 22;
-                for (let h = startHour; h < endHour; h++) {
-                    for (let m = 0; m < 60; m += 15) {
-                        let timeStr = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
-                        if (!result.reservedTimes.includes(timeStr)) {  
-                            let option = new Option(timeStr, timeStr);
-                            timeDropdown.add(option);
-                        }
-                    }
+        // 清空選單，準備填入時間
+        timeDropdown.innerHTML = '<option value="">請選擇時間</option>';
+
+        let startHour = 10, startMinute = 30, endHour = 22;
+        let availableCount = 0;
+
+        for (let h = startHour; h < endHour; h++) {
+            for (let m = 0; m < 60; m += 15) {
+                let timeStr = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+
+                if (!result.reservedTimes.includes(timeStr)) {  
+                    let option = new Option(timeStr, timeStr);
+                    timeDropdown.add(option);
+                    availableCount++;
                 }
-            } catch (error) {
-                console.error("❌ 載入時間失敗！", error);
             }
         }
+
+        if (availableCount === 0) {
+            console.warn("⚠️ 沒有可預約的時段！");
+            timeDropdown.innerHTML = '<option value="">⚠️ 無可預約時段</option>';
+        } else {
+            console.log("✅ 可預約時間已載入！");
+        }
+
+    } catch (error) {
+        console.error("❌ 載入時間失敗！", error);
+        timeDropdown.innerHTML = '<option value="">⚠️ 載入時間失敗</option>';
+    }
+}
 
         document.getElementById("master").addEventListener("change", loadAvailableTimes);
         document.getElementById("bookingDate").addEventListener("change", loadAvailableTimes);
