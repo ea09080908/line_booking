@@ -168,10 +168,9 @@
 
     console.log(`🔍 查詢 ${master} 在 ${bookingDate} 的預約時段...`);
 
-    // 🔹 顯示「載入中」提示
     timeDropdown.innerHTML = '<option value="">⏳ 時間載入中...</option>';
 
-    let apiUrl = `https://script.google.com/macros/s/AKfycbzWCWSJdUsn7JkrAfzWkziKm3WoG9ywDnkwuhBcm2G-N7aoqZzBPRQsNu5qm7vYLL9j6Q/exec?master=${encodeURIComponent(master)}&date=${encodeURIComponent(bookingDate)}`;
+    let apiUrl = `https://script.google.com/macros/s/你的GAS網址/exec?master=${encodeURIComponent(master)}&date=${encodeURIComponent(bookingDate)}`;
 
     try {
         let response = await fetch(apiUrl);
@@ -179,14 +178,12 @@
 
         console.log(`📄 API 回應:`, result);
 
-        // 確保 API 回應正確
         if (!result || !Array.isArray(result.reservedTimes)) {
             console.error("❌ API 沒有回應正確的 reservedTimes！");
             timeDropdown.innerHTML = '<option value="">⚠️ 無法載入時段</option>';
             return;
         }
 
-        // 清空選單，準備填入時間
         timeDropdown.innerHTML = '<option value="">請選擇時間</option>';
 
         let startHour = 10, startMinute = 30, endHour = 22;
@@ -213,7 +210,6 @@
 
     } catch (error) {
         console.error("❌ 載入時間失敗！", error);
-        timeDropdown.innerHTML = '<option value="">⚠️ 載入時間失敗</option>';
     }
 }
 
