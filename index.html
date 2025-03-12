@@ -7,9 +7,8 @@
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+Mono+TC&display=swap" rel="stylesheet">
     <style>
-        /* 整體樣式 */
         body {
-            background-color: #EED9C4; /* 奶茶色背景 */
+            background-color: #EED9C4;
             font-family: 'LXGW WenKai Mono TC', sans-serif;
             color: #5A3A31;
             margin: 0;
@@ -24,7 +23,6 @@
             margin-bottom: 5px;
         }
 
-        /* 下拉選單 & 輸入框 */
         select, input {
             width: 100%;
             padding: 12px;
@@ -36,7 +34,6 @@
             color: #5A3A31;
         }
 
-        /* 按鈕樣式 */
         button {
             background-color: #C19A6B;
             color: white;
@@ -130,26 +127,13 @@
 
     <label>選擇預約時間：</label>
     <select id="bookingTime">
-        <option value="">請選擇時間</option>
-        <script>
-            let timeDropdown = document.getElementById("bookingTime");
-            let startHour = 10, startMinute = 30, endHour = 22;
-            for (let h = startHour; h < endHour; h++) {
-                for (let m = 0; m < 60; m += 15) {
-                    let hourStr = h < 10 ? "0" + h : h;
-                    let minuteStr = m < 10 ? "0" + m : m;
-                    let timeStr = hourStr + ":" + minuteStr;
-                    let option = new Option(timeStr, timeStr);
-                    timeDropdown.add(option);
-                }
-            }
-        </script>
+        <option value="">⏳ 時間載入中...</option>
     </select>
 
     <button onclick="submitBooking()">確認預約</button>
 
     <script>
-                function initializeLiff() {
+        function initializeLiff() {
             liff.init({ liffId: "2007046076-266OGjYN" })
                 .then(() => console.log("LIFF 初始化成功"))
                 .catch((err) => console.error("LIFF 初始化失敗", err));
@@ -161,32 +145,28 @@
     let bookingDate = document.getElementById("bookingDate").value;
     let timeDropdown = document.getElementById("bookingTime");
 
-    if (!master || !bookingDate) {
-        alert("⚠️ 師傅或日期未選擇，無法載入時間！");
-        return;
-    }
+    if (!master || !bookingDate) return;
 
     console.log(`🔍 查詢 ${master} 在 ${bookingDate} 的預約時段...`);
-    alert(`🔍 查詢 ${master} 在 ${bookingDate} 的預約時段...`);  // 🔹 手機顯示查詢資訊
-
     timeDropdown.innerHTML = '<option value="">⏳ 時間載入中...</option>';
 
-    let apiUrl = `https://script.google.com/macros/s/AKfycbw6cJXkZwL9sW3yioyRznS4j_gs7qLYhWTpnLyFOlAFUJS4umuQAA6TS6qQ6IQVrw9iNQ/exec?master=${encodeURIComponent(master)}&date=${encodeURIComponent(bookingDate)}`; 
+    let apiUrl = `https://script.google.com/macros/s/AKfycbylveJAYRXeFRP_CE9w9NLXtpXf9pDrNZV3BhUmK99TLmmt2eDNt2nxRmpohOBwGvnQAw/exec?master=${encodeURIComponent(master)}&date=${encodeURIComponent(bookingDate)}`;
 
     try {
-        let response = await fetch(apiUrl);
-        let result = await response.json();
+        let response = await fetch(apiUrl, { method: "GET" });
 
-        console.log(`📄 API 回應:`, result);
-        alert(`📄 API 回應: ${JSON.stringify(result)}`);  // 🔹 手機顯示 API 回應
+        if (!response.ok) throw new Error(`HTTP 錯誤！狀態碼：${response.status}`);
+
+        let result = await response.json();
+        console.log("📄 API 回應:", result);
 
         if (!result || !Array.isArray(result.reservedTimes)) {
             console.error("❌ API 沒有回應正確的 reservedTimes！");
-            alert("❌ API 沒有回應正確的 reservedTimes！");  // 🔹 手機顯示錯誤
             timeDropdown.innerHTML = '<option value="">⚠️ 無法載入時段</option>';
             return;
         }
 
+        // 清空選單
         timeDropdown.innerHTML = '<option value="">請選擇時間</option>';
 
         let startHour = 10, startMinute = 30, endHour = 22;
@@ -196,7 +176,7 @@
             for (let m = 0; m < 60; m += 15) {
                 let timeStr = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
 
-                if (!result.reservedTimes.includes(timeStr)) {  
+                if (!result.reservedTimes.includes(timeStr)) {
                     let option = new Option(timeStr, timeStr);
                     timeDropdown.add(option);
                     availableCount++;
@@ -206,16 +186,33 @@
 
         if (availableCount === 0) {
             console.warn("⚠️ 沒有可預約的時段！");
-            alert("⚠️ 沒有可預約的時段！");
             timeDropdown.innerHTML = '<option value="">⚠️ 無可預約時段</option>';
         } else {
             console.log("✅ 可預約時間已載入！");
-            alert("✅ 可預約時間已載入！");
         }
 
     } catch (error) {
         console.error("❌ 載入時間失敗！", error);
-        alert(`❌ 載入時間失敗！錯誤訊息：${error}`);  // 🔹 手機顯示錯誤訊息
+        timeDropdown.innerHTML = '<option value="">⚠️ 載入時間失敗</option>';
+    }
+}
+
+        if (timeDropdown.options.length <= 1) {
+            timeDropdown.innerHTML = '<option value="">⚠️ 無可預約時段</option>';
+        }
+
+    } catch (error) {
+        console.error("❌ 載入時間失敗！", error);
+        timeDropdown.innerHTML = '<option value="">⚠️ 載入時間失敗</option>';
+    }
+}
+
+        if (timeDropdown.options.length <= 1) {
+            timeDropdown.innerHTML = '<option value="">⚠️ 無可預約時段</option>';
+        }
+
+    } catch (error) {
+        console.error("❌ 載入時間失敗！", error);
         timeDropdown.innerHTML = '<option value="">⚠️ 載入時間失敗</option>';
     }
 }
@@ -224,41 +221,49 @@
         document.getElementById("bookingDate").addEventListener("change", loadAvailableTimes);
 
         async function submitBooking() {
-            let master = document.getElementById("master").value;
-            let bookingDate = document.getElementById("bookingDate").value;
-            let bookingTime = document.getElementById("bookingTime").value;
+    let master = document.getElementById("master").value;
+    let bookingDate = document.getElementById("bookingDate").value;
+    let bookingTime = document.getElementById("bookingTime").value;
+    let service1 = document.getElementById("service1").value;
+    let service2 = document.getElementById("service2").value || "無";
 
-            if (!bookingDate || !bookingTime) {
-                alert("請選擇完整的預約內容！");
-                return;
-            }
+    if (!bookingDate || !bookingTime || !service1) {
+        alert("請選擇完整的預約內容！");
+        return;
+    }
 
-            let apiUrl = `https://script.google.com/macros/s/AKfycbw6cJXkZwL9sW3yioyRznS4j_gs7qLYhWTpnLyFOlAFUJS4umuQAA6TS6qQ6IQVrw9iNQ/exec?master=${encodeURIComponent(master)}&date=${encodeURIComponent(bookingDate)}`; 
-            let postData = { master, date: bookingDate, time: bookingTime };
+    let apiUrl = `https://script.google.com/macros/s/AKfycbylveJAYRXeFRP_CE9w9NLXtpXf9pDrNZV3BhUmK99TLmmt2eDNt2nxRmpohOBwGvnQAw/exec`;
 
-            try {
-                let response = await fetch(apiUrl, {
-                    method: "POST",
-                    body: JSON.stringify(postData),
-                    headers: { "Content-Type": "application/json" }
-                });
+    let postData = {
+        master: master,
+        date: bookingDate,
+        time: bookingTime,
+        service1: service1,
+        service2: service2
+    };
 
-                let result = await response.json();
-                if (result.success) {
-                    // 🔹 發送訊息到 LINE
-                    let bookingMessage = `📌 請等待小編預約確認\n👨 師傅：${master}\n📅 日期：${bookingDate}\n⏰ 時間：${bookingTime}\n\n📢 若您有其他特殊要求及狀況~務必要於服務前告知我們唷~\n➡️例如：是否有開刀的部位或是有懷孕的情形~\n本館僅提供按摩服務予懷孕 5 至 8 個月（20 至 32 週） 之孕婦。\n若本人確認符合此條件，請據實告知孕期週數，且進行服務前須簽署切結書方能安排服務。`;
+    try {
+        let response = await fetch(apiUrl, {
+            method: "POST",
+            body: JSON.stringify(postData),
+            headers: { "Content-Type": "application/json" }
+        });
 
-                    await liff.sendMessages([{ type: "text", text: bookingMessage }]);
-                    alert("預約成功！請返回 LINE");
-                    liff.closeWindow();
-                } else {
-                    alert("預約失敗，請稍後再試");
-                }
-            } catch (error) {
-                console.error("發送預約失敗", error);
-                alert("發送預約失敗，請確認網路連線！");
-            }
+        let result = await response.json();
+        if (result.success) {
+            let bookingMessage = `📌 你的預約已提交！\n👨 師傅：${master}\n🔧 服務：${service1} ${service2 !== "無" ? `, ${service2}` : ""}\n📅 日期：${bookingDate}\n⏰ 時間：${bookingTime}`;
+            await liff.sendMessages([{ type: "text", text: bookingMessage }]);
+
+            alert("預約成功！請返回 LINE");
+            liff.closeWindow();
+        } else {
+            alert("預約失敗，請稍後再試！");
         }
+    } catch (error) {
+        console.error("❌ 發送預約失敗！", error);
+        alert("⚠️ 發送預約失敗，請確認網路連線！");
+    }
+}
     </script>
 </body>
 </html>
