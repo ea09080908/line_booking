@@ -197,26 +197,6 @@
     }
 }
 
-        if (timeDropdown.options.length <= 1) {
-            timeDropdown.innerHTML = '<option value="">⚠️ 無可預約時段</option>';
-        }
-
-    } catch (error) {
-        console.error("❌ 載入時間失敗！", error);
-        timeDropdown.innerHTML = '<option value="">⚠️ 載入時間失敗</option>';
-    }
-}
-
-        if (timeDropdown.options.length <= 1) {
-            timeDropdown.innerHTML = '<option value="">⚠️ 無可預約時段</option>';
-        }
-
-    } catch (error) {
-        console.error("❌ 載入時間失敗！", error);
-        timeDropdown.innerHTML = '<option value="">⚠️ 載入時間失敗</option>';
-    }
-}
-
         document.getElementById("master").addEventListener("change", loadAvailableTimes);
         document.getElementById("bookingDate").addEventListener("change", loadAvailableTimes);
 
