@@ -224,27 +224,27 @@
 
     try {
         let response = await fetch(apiUrl, {
-    method: "POST",
-    mode: "cors",  // ✅ **允許 CORS**
-    credentials: "include",  // ✅ **修正 CORS 問題**
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(postData)
-});
+            method: "POST",
+            mode: "cors",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(postData)
+        });
 
+        if (!response.ok) {
+            throw new Error(`HTTP 錯誤！狀態碼：${response.status}`);
+        }
 
-let result = await response.json();
+        let result = await response.json();
         if (result.success) {
-            // ✅ 確保這段程式碼有執行
             let bookingMessage = `📌 你的預約已提交！\n👨 師傅：${master}\n🔧 服務：${service1} ${service2 !== "無" ? `, ${service2}` : ""}\n📅 日期：${bookingDate}\n⏰ 時間：${bookingTime}`;
-            
-            console.log("✅ 預約成功！訊息內容：", bookingMessage);  // 🔍 **測試是否有產生訊息**
-            
-            if (!liff.isLoggedIn()) {
-                alert("⚠️ 請先登入 LINE 才能發送訊息！");
-                return;
+
+            console.log("✅ 預約成功！訊息內容：", bookingMessage);
+
+            // **確保 LIFF 成功初始化**
+            if (typeof liff !== "undefined" && liff.isLoggedIn && liff.isLoggedIn()) {
+                await liff.sendMessages([{ type: "text", text: bookingMessage }]);
             }
-            
-            await liff.sendMessages([{ type: "text", text: bookingMessage }]);
 
             alert("預約成功！請返回 LINE");
             liff.closeWindow();
@@ -253,7 +253,7 @@ let result = await response.json();
         }
     } catch (error) {
         console.error("❌ 發送預約失敗！", error);
-        alert("⚠️ 發送預約失敗，請確認網路連線！");
+        alert("⚠️ 發送預約失敗，請確認網路連線或稍後再試！");
     }
 }
     </script>
