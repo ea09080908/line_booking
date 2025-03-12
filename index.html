@@ -168,7 +168,7 @@
             // 清空時間選單
             timeDropdown.innerHTML = '<option value="">請選擇時間</option>';
 
-            let apiUrl = `https://script.google.com/macros/s/AKfycbwhoxaJLp24Ud5hSw0GpZoEi2bDPbD4NprjgA6I_X0SY3cfIq1TRS5XEpg6_RQ2EUoLxw/exec`;
+            let apiUrl = "https://script.google.com/macros/s/AKfycbzWCWSJdUsn7JkrAfzWkziKm3WoG9ywDnkwuhBcm2G-N7aoqZzBPRQsNu5qm7vYLL9j6Q/exec";
 
             try {
                 let response = await fetch(apiUrl);
@@ -204,7 +204,7 @@
                 return;
             }
 
-            let apiUrl = "https://script.google.com/macros/s/AKfycbwhoxaJLp24Ud5hSw0GpZoEi2bDPbD4NprjgA6I_X0SY3cfIq1TRS5XEpg6_RQ2EUoLxw/exec";
+            let apiUrl = "https://script.google.com/macros/s/AKfycbzWCWSJdUsn7JkrAfzWkziKm3WoG9ywDnkwuhBcm2G-N7aoqZzBPRQsNu5qm7vYLL9j6Q/exec";
             let postData = { master, date: bookingDate, time: bookingTime };
 
             try {
