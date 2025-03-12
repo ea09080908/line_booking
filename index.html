@@ -150,7 +150,7 @@
     console.log(`🔍 查詢 ${master} 在 ${bookingDate} 的預約時段...`);
     timeDropdown.innerHTML = '<option value="">⏳ 時間載入中...</option>';
 
-    let apiUrl = `https://script.google.com/macros/s/AKfycbzrEViKJzyf1qk06Jhd_MvVjcAxUB6_8Z0D3_s8oLV2CfU9pFzvXKeypt-UyrPGXjflWg/exec?master=${encodeURIComponent(master)}&date=${encodeURIComponent(bookingDate)}`;
+    let apiUrl = `https://script.google.com/macros/s/AKfycbxtwbh_uXfBOzuP1q015E0-NkvaPN_g6o03dO7lWVK6_hJ_oc7oCSo3Gd728lox3GNQ/exec?master=${encodeURIComponent(master)}&date=${encodeURIComponent(bookingDate)}`;
 
     try {
         let response = await fetch(apiUrl, { method: "GET" });
@@ -212,7 +212,7 @@
         return;
     }
 
-    let apiUrl = "https://script.google.com/macros/s/AKfycbzrEViKJzyf1qk06Jhd_MvVjcAxUB6_8Z0D3_s8oLV2CfU9pFzvXKeypt-UyrPGXjflWg/exec";
+    let apiUrl = "https://script.google.com/macros/s/AKfycbxtwbh_uXfBOzuP1q015E0-NkvaPN_g6o03dO7lWVK6_hJ_oc7oCSo3Gd728lox3GNQ/exec";
 
     let postData = {
         master: master,
