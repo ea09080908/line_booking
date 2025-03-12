@@ -224,11 +224,12 @@
 
     try {
         let response = await fetch(apiUrl, {
-            method: "POST",
-            mode: "cors",  // ✅ **允許 CORS**
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(postData)
-        });
+    method: "POST",
+    mode: "cors",  // ✅ **允許 CORS**
+    credentials: "include",  // ✅ **修正 CORS 問題**
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(postData)
+});
 
 
 let result = await response.json();
@@ -237,6 +238,11 @@ let result = await response.json();
             let bookingMessage = `📌 你的預約已提交！\n👨 師傅：${master}\n🔧 服務：${service1} ${service2 !== "無" ? `, ${service2}` : ""}\n📅 日期：${bookingDate}\n⏰ 時間：${bookingTime}`;
             
             console.log("✅ 預約成功！訊息內容：", bookingMessage);  // 🔍 **測試是否有產生訊息**
+            
+            if (!liff.isLoggedIn()) {
+                alert("⚠️ 請先登入 LINE 才能發送訊息！");
+                return;
+            }
             
             await liff.sendMessages([{ type: "text", text: bookingMessage }]);
 
