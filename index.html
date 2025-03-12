@@ -212,18 +212,6 @@
         return;
     }
 
-    async function submitBooking() {
-    let master = document.getElementById("master").value;
-    let bookingDate = document.getElementById("bookingDate").value;
-    let bookingTime = document.getElementById("bookingTime").value;
-    let service1 = document.getElementById("service1").value;
-    let service2 = document.getElementById("service2").value || "無";
-
-    if (!bookingDate || !bookingTime || !service1) {
-        alert("請選擇完整的預約內容！");
-        return;
-    }
-
     let apiUrl = "https://script.google.com/macros/s/AKfycbxH0_gmHG7500kaCmpuzOnd2S2JJLeEyNcUCngRN0ECAcAsGMG_T6-qna2yVIE3_td7Pw/exec";
 
     let postData = {
