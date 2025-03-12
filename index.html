@@ -150,7 +150,7 @@
     console.log(`🔍 查詢 ${master} 在 ${bookingDate} 的預約時段...`);
     timeDropdown.innerHTML = '<option value="">⏳ 時間載入中...</option>';
 
-    let apiUrl = `https://script.google.com/macros/s/AKfycbxALBggnB0Yt4temT1RfQsl8z4zfIUG8vrDadFbAfuSM4Yk67dXvnUVN3VXauaznRhuhQ/exec?master=${encodeURIComponent(master)}&date=${encodeURIComponent(bookingDate)}`;
+    let apiUrl = `https://script.google.com/macros/s/AKfycbxH0_gmHG7500kaCmpuzOnd2S2JJLeEyNcUCngRN0ECAcAsGMG_T6-qna2yVIE3_td7Pw/exec?master=${encodeURIComponent(master)}&date=${encodeURIComponent(bookingDate)}`;
 
     try {
         let response = await fetch(apiUrl, { method: "GET" });
@@ -212,7 +212,19 @@
         return;
     }
 
-    let apiUrl = `https://script.google.com/macros/s/AKfycbxALBggnB0Yt4temT1RfQsl8z4zfIUG8vrDadFbAfuSM4Yk67dXvnUVN3VXauaznRhuhQ/exec`;
+    async function submitBooking() {
+    let master = document.getElementById("master").value;
+    let bookingDate = document.getElementById("bookingDate").value;
+    let bookingTime = document.getElementById("bookingTime").value;
+    let service1 = document.getElementById("service1").value;
+    let service2 = document.getElementById("service2").value || "無";
+
+    if (!bookingDate || !bookingTime || !service1) {
+        alert("請選擇完整的預約內容！");
+        return;
+    }
+
+    let apiUrl = "https://script.google.com/macros/s/AKfycbxH0_gmHG7500kaCmpuzOnd2S2JJLeEyNcUCngRN0ECAcAsGMG_T6-qna2yVIE3_td7Pw/exec";
 
     let postData = {
         master: master,
@@ -224,15 +236,20 @@
 
     try {
         let response = await fetch(apiUrl, {
-    method: "POST",
-    mode: "cors",  // ✅ **允許 CORS**
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(postData)
-});
+            method: "POST",
+            mode: "cors",  // ✅ **允許 CORS**
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(postData)
+        });
 
-        let result = await response.json();
+
+let result = await response.json();
         if (result.success) {
+            // ✅ 確保這段程式碼有執行
             let bookingMessage = `📌 你的預約已提交！\n👨 師傅：${master}\n🔧 服務：${service1} ${service2 !== "無" ? `, ${service2}` : ""}\n📅 日期：${bookingDate}\n⏰ 時間：${bookingTime}`;
+            
+            console.log("✅ 預約成功！訊息內容：", bookingMessage);  // 🔍 **測試是否有產生訊息**
+            
             await liff.sendMessages([{ type: "text", text: bookingMessage }]);
 
             alert("預約成功！請返回 LINE");
