@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>預約服務</title>
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+Mono+TC&display=swap" rel="stylesheet">
+
     <style>
         body {
             background-color: #EED9C4;
@@ -16,13 +16,11 @@
             max-width: 500px;
             margin: auto;
         }
-
         h2, label {
             text-align: left;
             display: block;
             margin-bottom: 5px;
         }
-
         select, input {
             width: 100%;
             padding: 12px;
@@ -33,7 +31,6 @@
             background-color: #FFF5E1;
             color: #5A3A31;
         }
-
         button {
             background-color: #C19A6B;
             color: white;
@@ -46,7 +43,6 @@
             margin-top: 15px;
             transition: 0.3s;
         }
-
         button:hover {
             background-color: #A67C52;
         }
@@ -141,117 +137,79 @@
         document.addEventListener("DOMContentLoaded", initializeLiff);
 
         async function loadAvailableTimes() {
-    let master = document.getElementById("master").value;
-    let bookingDate = document.getElementById("bookingDate").value;
-    let timeDropdown = document.getElementById("bookingTime");
+            let master = document.getElementById("master").value;
+            let bookingDate = document.getElementById("bookingDate").value;
+            let timeDropdown = document.getElementById("bookingTime");
 
-    if (!master || !bookingDate) return;
+            if (!master || !bookingDate) return;
 
-    console.log(`🔍 查詢 ${master} 在 ${bookingDate} 的預約時段...`);
-    timeDropdown.innerHTML = '<option value="">⏳ 時間載入中...</option>';
+            console.log(`🔍 查詢 ${master} 在 ${bookingDate} 的預約時段...`);
 
-    let apiUrl = `https://script.google.com/macros/s/AKfycbxAlMaspB_cHU3NuGbwb_esHZ_xHqu3wpE0Ze7s9zj2TcUJNZunxmoiPYa7yTK9dSd_-A/exec?master=${encodeURIComponent(master)}&date=${encodeURIComponent(bookingDate)}`;
+            // 清空時間選單
+            timeDropdown.innerHTML = '<option value="">請選擇時間</option>';
 
-    try {
-        let response = await fetch(apiUrl, { method: "GET" });
+            let apiUrl = `https://script.google.com/macros/s/AKfycbxAlMaspB_cHU3NuGbwb_esHZ_xHqu3wpE0Ze7s9zj2TcUJNZunxmoiPYa7yTK9dSd_-A/exec?master=${encodeURIComponent(master)}&date=${encodeURIComponent(bookingDate)}`;
 
-        if (!response.ok) throw new Error(`HTTP 錯誤！狀態碼：${response.status}`);
+            try {
+                let response = await fetch(apiUrl);
+                let result = await response.json();
 
-        let result = await response.json();
-        console.log("📄 API 回應:", result);
+                console.log(`📄 Google Sheets 內 ${bookingDate} 的預約時段:`, result.reservedTimes);
 
-        if (!result || !Array.isArray(result.reservedTimes)) {
-            console.error("❌ API 沒有回應正確的 reservedTimes！");
-            timeDropdown.innerHTML = '<option value="">⚠️ 無法載入時段</option>';
-            return;
-        }
-
-        // 清空選單
-        timeDropdown.innerHTML = '<option value="">請選擇時間</option>';
-
-        let startHour = 10, startMinute = 30, endHour = 22;
-        let availableCount = 0;
-
-        for (let h = startHour; h < endHour; h++) {
-            for (let m = 0; m < 60; m += 15) {
-                let timeStr = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
-
-                if (!result.reservedTimes.includes(timeStr)) {
-                    let option = new Option(timeStr, timeStr);
-                    timeDropdown.add(option);
-                    availableCount++;
+                let startHour = 10, startMinute = 30, endHour = 22;
+                for (let h = startHour; h < endHour; h++) {
+                    for (let m = 0; m < 60; m += 15) {
+                        let timeStr = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+                        if (!result.reservedTimes.includes(timeStr)) {  
+                            let option = new Option(timeStr, timeStr);
+                            timeDropdown.add(option);
+                        }
+                    }
                 }
+            } catch (error) {
+                console.error("❌ 載入時間失敗！", error);
             }
         }
-
-        if (availableCount === 0) {
-            console.warn("⚠️ 沒有可預約的時段！");
-            timeDropdown.innerHTML = '<option value="">⚠️ 無可預約時段</option>';
-        } else {
-            console.log("✅ 可預約時間已載入！");
-        }
-
-    } catch (error) {
-        console.error("❌ 載入時間失敗！", error);
-        timeDropdown.innerHTML = '<option value="">⚠️ 載入時間失敗</option>';
-    }
-}
 
         document.getElementById("master").addEventListener("change", loadAvailableTimes);
         document.getElementById("bookingDate").addEventListener("change", loadAvailableTimes);
 
         async function submitBooking() {
-    let master = document.getElementById("master").value;
-    let bookingDate = document.getElementById("bookingDate").value;
-    let bookingTime = document.getElementById("bookingTime").value;
-    let service1 = document.getElementById("service1").value;
-    let service2 = document.getElementById("service2").value || "無";
+            let master = document.getElementById("master").value;
+            let bookingDate = document.getElementById("bookingDate").value;
+            let bookingTime = document.getElementById("bookingTime").value;
 
-    if (!bookingDate || !bookingTime || !service1) {
-        alert("請選擇完整的預約內容！");
-        return;
-    }
+            if (!bookingDate || !bookingTime) {
+                alert("請選擇完整的預約內容！");
+                return;
+            }
 
-    async function submitBooking() {
-    let master = document.getElementById("master").value;
-    let bookingDate = document.getElementById("bookingDate").value;
-    let bookingTime = document.getElementById("bookingTime").value;
-    let service1 = document.getElementById("service1").value;
-    let service2 = document.getElementById("service2").value || "無";
+            let apiUrl = "https://script.google.com/macros/s/AKfycbxAlMaspB_cHU3NuGbwb_esHZ_xHqu3wpE0Ze7s9zj2TcUJNZunxmoiPYa7yTK9dSd_-A/exec";
+            let postData = { master, date: bookingDate, time: bookingTime };
 
-    if (!bookingDate || !bookingTime || !service1) {
-        alert("請選擇完整的預約內容！");
-        return;
-    }
+            try {
+                let response = await fetch(apiUrl, {
+                    method: "POST",
+                    body: JSON.stringify(postData),
+                    headers: { "Content-Type": "application/json" }
+                });
 
-    let apiUrl = "https://script.google.com/macros/s/AKfycbxAlMaspB_cHU3NuGbwb_esHZ_xHqu3wpE0Ze7s9zj2TcUJNZunxmoiPYa7yTK9dSd_-A/exec";  // 🔥 更新這裡！
+                let result = await response.json();
+                if (result.success) {
+                    // 🔹 發送訊息到 LINE
+                    let bookingMessage = `📌 預約確認\n👨 師傅：${master}\n📅 日期：${bookingDate}\n⏰ 時間：${bookingTime}`;
+                    await liff.sendMessages([{ type: "text", text: bookingMessage }]);
 
-    let postData = {
-        master: master,
-        date: bookingDate,
-        time: bookingTime,
-        service1: service1,
-        service2: service2
-    };
-
-    try {
-        let response = await fetch(apiUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(postData)
-        });
-
-        let result = await response.json();
-        if (result.success) {
-            alert("✅ 預約成功！");
-        } else {
-            alert("⚠️ 預約失敗，請稍後再試！");
+                    alert("預約成功！請返回 LINE");
+                    liff.closeWindow();
+                } else {
+                    alert("預約失敗，請稍後再試");
+                }
+            } catch (error) {
+                console.error("發送預約失敗", error);
+                alert("發送預約失敗，請確認網路連線！");
+            }
         }
-    } catch (error) {
-        console.error("❌ 發送預約失敗！", error);
-        alert("⚠️ 發送預約失敗，請確認網路連線或稍後再試！");
-    }
-}
     </script>
 </body>
 </html>
