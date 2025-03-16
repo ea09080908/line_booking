@@ -225,7 +225,7 @@
     try {
         let response = await fetch(apiUrl, {
             method: "POST",
-            mode: "cors",
+            mode: "cors",  // ✅ 必須開啟 CORS
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(postData)
         });
