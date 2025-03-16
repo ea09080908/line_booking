@@ -212,7 +212,7 @@
         return;
     }
 
-    let apiUrl = "https://script.google.com/macros/s/AKfycbypWcM5TD1VnTCk1syjX2lufOLn7yvFbwDW-nvcWneA-BmgtuZ0zI59Wp3J2liev9EslA/exec";
+    let apiUrl = "https://script.google.com/macros/s/你的新GAS網址/exec";
 
     let postData = {
         master: master,
@@ -223,12 +223,12 @@
     };
 
     try {
-        let response = await fetch(apiUrl, { 
-    method: "POST",
-    mode: "cors",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(postData)
-});
+        let response = await fetch(apiUrl, {
+            method: "POST",
+            mode: "cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(postData)
+        });
 
         if (!response.ok) {
             throw new Error(`HTTP 錯誤！狀態碼：${response.status}`);
@@ -239,14 +239,7 @@
             let bookingMessage = `📌 你的預約已提交！\n👨 師傅：${master}\n🔧 服務：${service1} ${service2 !== "無" ? `, ${service2}` : ""}\n📅 日期：${bookingDate}\n⏰ 時間：${bookingTime}`;
 
             console.log("✅ 預約成功！訊息內容：", bookingMessage);
-
-            // **確保 LIFF 成功初始化**
-            if (typeof liff !== "undefined" && liff.isLoggedIn && liff.isLoggedIn()) {
-                await liff.sendMessages([{ type: "text", text: bookingMessage }]);
-            }
-
             alert("預約成功！請返回 LINE");
-            liff.closeWindow();
         } else {
             alert("預約失敗，請稍後再試！");
         }
