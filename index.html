@@ -212,7 +212,7 @@
         return;
     }
 
-    let apiUrl = "https://script.google.com/macros/s/AKfycbxAlMaspB_cHU3NuGbwb_esHZ_xHqu3wpE0Ze7s9zj2TcUJNZunxmoiPYa7yTK9dSd_-A/exec";
+    let apiUrl = "https://script.google.com/macros/s/AKfycbxAlMaspB_cHU3NuGbwb_esHZ_xHqu3wpE0Ze7s9zj2TcUJNZunxmoiPYa7yTK9dSd_-A/exec";  // 🔥 更新這裡！
 
     let postData = {
         master: master,
@@ -225,23 +225,15 @@
     try {
         let response = await fetch(apiUrl, {
             method: "POST",
-            mode: "cors",  // ✅ 必須開啟 CORS
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(postData)
         });
 
-        if (!response.ok) {
-            throw new Error(`HTTP 錯誤！狀態碼：${response.status}`);
-        }
-
         let result = await response.json();
         if (result.success) {
-            let bookingMessage = `📌 你的預約已提交！\n👨 師傅：${master}\n🔧 服務：${service1} ${service2 !== "無" ? `, ${service2}` : ""}\n📅 日期：${bookingDate}\n⏰ 時間：${bookingTime}`;
-
-            console.log("✅ 預約成功！訊息內容：", bookingMessage);
-            alert("預約成功！請返回 LINE");
+            alert("✅ 預約成功！");
         } else {
-            alert("預約失敗，請稍後再試！");
+            alert("⚠️ 預約失敗，請稍後再試！");
         }
     } catch (error) {
         console.error("❌ 發送預約失敗！", error);
