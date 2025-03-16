@@ -212,6 +212,18 @@
         return;
     }
 
+    async function submitBooking() {
+    let master = document.getElementById("master").value;
+    let bookingDate = document.getElementById("bookingDate").value;
+    let bookingTime = document.getElementById("bookingTime").value;
+    let service1 = document.getElementById("service1").value;
+    let service2 = document.getElementById("service2").value || "無";
+
+    if (!bookingDate || !bookingTime || !service1) {
+        alert("請選擇完整的預約內容！");
+        return;
+    }
+
     let apiUrl = "https://script.google.com/macros/s/AKfycbxAlMaspB_cHU3NuGbwb_esHZ_xHqu3wpE0Ze7s9zj2TcUJNZunxmoiPYa7yTK9dSd_-A/exec";  // 🔥 更新這裡！
 
     let postData = {
