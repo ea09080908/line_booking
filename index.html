@@ -69,7 +69,6 @@
         <option value="23號女師傅">23號女師傅</option>
         <option value="22號女師傅">22號女師傅</option>
         <option value="88號女師傅">88號女師傅</option>
-
     </select>
 
     <label>選擇服務項目（第一個）：</label>
@@ -101,6 +100,33 @@
 
     <label>選擇服務項目（第二個，可選填）：</label>
     <select id="service2">
+        <option value="">請選擇服務（可不選）</option>
+        <option value="A套餐">A套餐</option>
+        <option value="B套餐">B套餐</option>
+        <option value="C套餐">C套餐</option>
+        <option value="D套餐">D套餐</option>
+        <option value="腳底腿部按摩40分">腳底腿部按摩40分</option>
+        <option value="腳底腿部按摩60分">腳底腿部按摩60分</option>
+        <option value="身體指壓60分">身體指壓60分</option>
+        <option value="身體指壓90分">身體指壓90分</option>
+        <option value="身體指壓120分">身體指壓120分</option>
+        <option value="身體油壓60分">身體油壓60分</option>
+        <option value="身體油壓90分">身體油壓90分</option>
+        <option value="身體油壓120分">身體油壓120分</option>
+        <option value="眼部舒壓頭肩頸按摩45分">眼部舒壓頭肩頸按摩45分</option>
+        <option value="耳燭頭肩頸按摩45分">耳燭頭肩頸按摩45分</option>
+        <option value="頭肩頸按摩15分">頭肩頸按摩15分</option>
+        <option value="頭肩頸按摩30分">頭肩頸按摩30分</option>
+        <option value="半身按摩45分">半身按摩45分</option>
+        <option value="運動按摩60分">運動按摩60分</option>
+        <option value="運動按摩90分">運動按摩90分</option>
+        <option value="運動按摩120分">運動按摩120分</option>
+        <option value="單次刮痧">單次刮痧</option>
+        <option value="上海刀修腳皮">上海刀修腳皮</option>
+    </select>
+
+    <label>選擇服務項目（第三個，可選填）：</label>
+    <select id="service3">
         <option value="">請選擇服務（可不選）</option>
         <option value="A套餐">A套餐</option>
         <option value="B套餐">B套餐</option>
@@ -177,7 +203,7 @@
                 serviceMessage += `, ${service2}`;
             }
 
-            let bookingMessage = `📌 請等待小編預約確認\n\n👨 師傅：${master}\n🔧 服務：${serviceMessage}\n📅 日期：${bookingDate}\n⏰ 時間：${bookingTime}\n\n📢 若您有其他特殊要求及狀況~務必要於服務前告知我們唷~\n➡️例如：是否有開刀的部位或是有懷孕的情形~\n本館僅提供按摩服務予懷孕 5 至 8 個月（20 至 32 週） 之孕婦。\n若本人確認符合此條件，請據實告知孕期週數，且進行服務前須簽署切結書方能安排服務。`;
+            let bookingMessage = `📌 請等待小編預約確認\n\n👨 師傅：${master}\n🔧 服務：${serviceMessage}\n🔧 服務：${serviceMessage2}\n🔧 服務：${serviceMessage3}\n📅 日期：${bookingDate}\n⏰ 時間：${bookingTime}\n\n📢 若您有其他特殊要求及狀況~務必要於服務前告知我們唷~\n➡️例如：是否有開刀的部位或是有懷孕的情形~\n本館僅提供按摩服務予懷孕 5 至 8 個月（20 至 32 週） 之孕婦。\n若本人確認符合此條件，請據實告知孕期週數，且進行服務前須簽署切結書方能安排服務。`;
 
             liff.sendMessages([{ type: "text", text: bookingMessage }])
                 .then(() => {
