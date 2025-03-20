@@ -60,15 +60,16 @@
 
     <label>選擇師傅：</label>
     <select id="master">
-        <option value="22號女師傅">22號女師傅</option>
-        <option value="77號女師傅">77號女師傅</option>
-        <option value="23號女師傅">23號女師傅</option>
-        <option value="88號女師傅">88號女師傅</option>
+        <option value="不指定師傅">不指定師傅</option>
         <option value="8號男師傅">8號男師傅</option>
         <option value="13號男師傅">13號男師傅</option>
         <option value="24號男師傅">24號男師傅</option>
         <option value="9號男師傅">9號男師傅</option>
-        <option value="不指定師傅">不指定師傅</option>
+        <option value="77號女師傅">77號女師傅</option>
+        <option value="23號女師傅">23號女師傅</option>
+        <option value="22號女師傅">22號女師傅</option>
+        <option value="88號女師傅">88號女師傅</option>
+
     </select>
 
     <label>選擇服務項目（第一個）：</label>
@@ -176,7 +177,7 @@
                 serviceMessage += `, ${service2}`;
             }
 
-            let bookingMessage = `📌 請等待小編預約確認\n👨 師傅：${master}\n🔧 服務：${serviceMessage}\n📅 日期：${bookingDate}\n⏰ 時間：${bookingTime}\n\n📢 若您有其他特殊要求及狀況~務必要於服務前告知我們唷~\n➡️例如：是否有開刀的部位或是有懷孕的情形~\n本館僅提供按摩服務予懷孕 5 至 8 個月（20 至 32 週） 之孕婦。\n若本人確認符合此條件，請據實告知孕期週數，且進行服務前須簽署切結書方能安排服務。`;
+            let bookingMessage = `📌 請等待小編預約確認\n\n👨 師傅：${master}\n🔧 服務：${serviceMessage}\n📅 日期：${bookingDate}\n⏰ 時間：${bookingTime}\n\n📢 若您有其他特殊要求及狀況~務必要於服務前告知我們唷~\n➡️例如：是否有開刀的部位或是有懷孕的情形~\n本館僅提供按摩服務予懷孕 5 至 8 個月（20 至 32 週） 之孕婦。\n若本人確認符合此條件，請據實告知孕期週數，且進行服務前須簽署切結書方能安排服務。`;
 
             liff.sendMessages([{ type: "text", text: bookingMessage }])
                 .then(() => {
