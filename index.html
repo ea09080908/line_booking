@@ -168,10 +168,11 @@ button:hover { background-color: #A67C52; }
     <button onclick="submitBooking()">確認預約</button>
 
     <script>
-        function submitBooking() {
+            function submitBooking() {
             let master = document.getElementById("master").value;
             let service1 = document.getElementById("service1").value;
             let service2 = document.getElementById("service2").value;
+            let service3 = document.getElementById("service3").value;
             let bookingDate = document.getElementById("bookingDate").value;
             let bookingTime = document.getElementById("bookingTime").value;
 
@@ -179,23 +180,20 @@ button:hover { background-color: #A67C52; }
                 alert("請選擇至少一個服務項目！");
                 return;
             }
-
             if (!bookingDate) {
                 alert("請選擇預約日期！");
                 return;
             }
-
             if (!bookingTime) {
                 alert("請選擇預約時間！");
                 return;
             }
 
             let serviceMessage = service1;
-            if (service2) {
-                serviceMessage += `, ${service2}`;
-            }
+            if (service2) serviceMessage += `, ${service2}`;
+            if (service3) serviceMessage += `, ${service3}`;
 
-            let bookingMessage = `📌 請等待小編預約確認\n\n👨 師傅：${master}\n🔧 服務：${serviceMessage}\n🔧 服務：${serviceMessage2}\n🔧 服務：${serviceMessage3}\n📅 日期：${bookingDate}\n⏰ 時間：${bookingTime}\n\n📢 此預約諮詢非預約成功訊息，請待小編確認師傅空檔後，會再發送預約成功訊息才算完成預約唷ˊ;
+            let bookingMessage =  `📌 請等待小編預約確認\n\n👨 師傅：${master}\n🔧 服務：${serviceMessage}\n📅 日期：${bookingDate}\n⏰ 時間：${bookingTime}\n\n📢 此預約諮詢非預約成功訊息，請待小編確認師傅空檔後，會再發送預約成功訊息才算完成預約唷`;
 
             liff.sendMessages([{ type: "text", text: bookingMessage }])
                 .then(() => {
