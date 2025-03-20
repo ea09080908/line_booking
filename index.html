@@ -28,17 +28,19 @@ select, input {
     background-color: #FFF5E1;
     color: #5A3A31;
 }
-input[type="date"] { 
-    width: 100%;  /* 確保和其他欄位一樣寬 */
-    max-width: 100%;  /* 避免受瀏覽器影響 */
-    text-align: center;
-    appearance: none; /* 移除 iOS、Android 預設樣式 */
-    padding: 12px; /* 與其他輸入框一致 */
+input[type="date"] {
+    width: 90%;  /* 讓日期欄位比其他欄位小 10% */
+    min-width: 90%;
+    max-width: 90%;
+    display: block;
+    padding: 12px;
     border: 2px solid #C19A6B;
     border-radius: 8px;
     font-size: 18px;
     background-color: #FFF5E1;
     color: #5A3A31;
+    text-align: center;
+    margin: auto;  /* 讓它居中 */
 }
 button {
     background-color: #C19A6B;
