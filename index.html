@@ -288,19 +288,6 @@ button:hover { background-color: #A67C52; }
     <label>選擇預約時間：</label>
     <select id="bookingTime">
         <option value="">請選擇時間</option>
-        <script>
-            let timeDropdown = document.getElementById("bookingTime");
-            let startHour = 10, startMinute = 30, endHour = 22;
-            for (let h = startHour; h < endHour; h++) {
-                for (let m = 0; m < 60; m += 15) {
-                    let hourStr = h < 10 ? "0" + h : h;
-                    let minuteStr = m < 10 ? "0" + m : m;
-                    let timeStr = hourStr + ":" + minuteStr;
-                    let option = new Option(timeStr, timeStr);
-                    timeDropdown.add(option);
-                }
-            }
-        </script>
     </select>
 
     <button onclick="submitBooking()">確認預約</button>
@@ -320,7 +307,7 @@ button:hover { background-color: #A67C52; }
         timeDropdown.add(new Option(`${hour}:${minute}`, `${hour}:${minute}`));
       }
     }
-    
+
 function submitBooking() {
     let bookingDate = document.getElementById("bookingDate").value;
     let bookingTime = document.getElementById("bookingTime").value;
