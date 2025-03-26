@@ -56,6 +56,16 @@ button {
     transition: 0.3s;
 }
 button:hover { background-color: #A67C52; }
+
+.toggle-btn {
+      background-color: #fff0d9;
+      color: #5a3a31;
+      border: 2px dashed #c19a6b;
+      font-size: 16px;
+      border-radius: 6px;
+      padding: 10px;
+      margin: 15px 0;
+    }
     </style>
 </head>
 <body>
@@ -127,6 +137,9 @@ button:hover { background-color: #A67C52; }
         <option value="上海刀修腳皮">上海刀修腳皮</option>
     </select>
 
+    <!-- 第二位客人 -->
+<button type="button" onclick="toggleCustomer(2)">＋新增第二位客人</button>
+<div id="customer2" style="display: none;">
     <h2>第二位客人</h2>
 <label>選擇師傅（第二位客人）：</label>
 <select id="master2">
@@ -194,7 +207,11 @@ button:hover { background-color: #A67C52; }
         <option value="單次刮痧">單次刮痧</option>
         <option value="上海刀修腳皮">上海刀修腳皮</option>
     </select>
+</div>
 
+<!-- 第三位客人 -->
+<button type="button" onclick="toggleCustomer(3)">＋新增第三位客人</button>
+<div id="customer3" style="display: none;">
     <h2>第三位客人</h2>
     <label>選擇師傅（第三位客人）：</label>
     <select id="master3">
@@ -262,6 +279,8 @@ button:hover { background-color: #A67C52; }
             <option value="單次刮痧">單次刮痧</option>
             <option value="上海刀修腳皮">上海刀修腳皮</option>
         </select>
+    </div>
+
     <h2>選擇預約日期及時間</h2>
     <label>選擇預約日期：</label>
     <input type="date" id="bookingDate">
@@ -287,6 +306,21 @@ button:hover { background-color: #A67C52; }
     <button onclick="submitBooking()">確認預約</button>
 
     <script>
+            function toggleCustomer(i) {
+      const el = document.getElementById(`customer${i}`);
+      el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    }
+
+    // 初始化時間選單
+    const timeDropdown = document.getElementById('bookingTime');
+    for (let h = 10; h < 22; h++) {
+      for (let m = 0; m < 60; m += 15) {
+        let hour = h.toString().padStart(2, '0');
+        let minute = m.toString().padStart(2, '0');
+        timeDropdown.add(new Option(`${hour}:${minute}`, `${hour}:${minute}`));
+      }
+    }
+    
 function submitBooking() {
     let bookingDate = document.getElementById("bookingDate").value;
     let bookingTime = document.getElementById("bookingTime").value;
